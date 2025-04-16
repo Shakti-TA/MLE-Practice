@@ -3,6 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#csv files and pyc files
+*.csv
+*.pyc
+
+#Ignore Zone Identifier
+nonstandardcode.py:Zone.Identifier
+
 # C extensions
 *.so
 
