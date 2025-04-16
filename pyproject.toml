@@ -1,0 +1,15 @@
+[tool.black]
+line-length = 88
+target-version = ["py38"]  # or py39, py310, etc.
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = [
+    "E203",  # whitespace before ':', black does this on purpose
+    "W503"   # line break before binary operator, black prefers this
+]
+

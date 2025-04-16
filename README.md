@@ -17,4 +17,4 @@ The following techniques have been used:
 
 ## To excute the script
 - first setup the environment : conda env create -f env.yml
-- run the python3 nonstandardcode.py
+- run : python3 nonstandardcode.py

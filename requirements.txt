@@ -3,3 +3,6 @@ matplotlib
 scikit-learn
 Scipy
 six
+Black
+isort
+flake8
