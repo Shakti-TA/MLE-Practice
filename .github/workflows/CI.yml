@@ -1,7 +1,3 @@
-channels:
-  - defaults
-  - conda-forge
-
 name: 'CI-test'
 
 on: [push, pull_request]
