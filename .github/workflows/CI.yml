@@ -1,0 +1,30 @@
+name: 'CI-test'
+
+on: [push, pull_request]
+
+jobs:
+  ci-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Set up Miniforge and Conda environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniforge-variant: Miniforge3
+          environment-file: env.yml
+          activate-environment: mle-dev
+          auto-activate-base: false
+
+      - name: Install and run flake8
+        shell: bash -l {0}
+        run: |
+          pip install flake8
+          flake8 .
+
+      - name: Run the nonstandardcode.py file
+        shell: bash -l {0}
+        run: |
+          python nonstandardcode.py
