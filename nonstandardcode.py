@@ -36,7 +36,6 @@ def load_housing_data(housing_path=HOUSING_PATH):
     return pd.read_csv(csv_path)
 
 
-#Create housing data
 fetch_housing_data()
 housing = load_housing_data()
 
@@ -82,7 +81,9 @@ housing = strat_train_set.copy()
 housing.plot(kind="scatter", x="longitude", y="latitude")
 housing.plot(kind="scatter", x="longitude", y="latitude", alpha=0.1)
 
-corr_matrix = housing.drop(columns=['ocean_proximity']).corr() #All except the last column
+corr_matrix = housing.drop(
+    columns=['ocean_proximity']
+    ).corr()
 corr_matrix["median_house_value"].sort_values(ascending=False)
 housing["rooms_per_household"] = housing["total_rooms"] / housing["households"]
 housing["bedrooms_per_room"] = (
