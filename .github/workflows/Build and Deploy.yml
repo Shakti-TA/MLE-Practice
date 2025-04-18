@@ -66,8 +66,7 @@ jobs:
       # Step 11: Install the package
       - name: 📦 Install Built Package
         run: |
-          cd ./artifact
-          pip install dist/*.whl
+          pip install ./artifact/*.whl
 
       # Step 12: Run nonstandardcode.py
       - name: ▶️ Run nonstandardcode.py
