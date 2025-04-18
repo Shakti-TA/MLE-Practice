@@ -9,15 +9,15 @@ from HousePricePrediction.score import Score
 from HousePricePrediction.train import Data_Train
 
 if __name__ == "__main__":
-    obj = DataIngestion()
-    obj.initiate_data_ingestion()
+    data_ingest_obj = DataIngestion()
+    data_ingest_obj.initiate_data_ingestion()
 
     train_data_path = os.path.join("datasets/housing", "train.csv")
-    obj = Data_Train(train_data_path)
-    obj.get_data_train()
+    data_train_obj = Data_Train(train_data_path)
+    data_train_obj.get_data_train()
 
     test_data_path = os.path.join("datasets/housing", "test.csv")
-    obj = Score(test_data_path)
+    data_score_obj = Score(test_data_path)
     data, labels = obj.get_model_score()
 
     with open("artifacts/final_model.pkl", "rb") as f:
