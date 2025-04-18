@@ -10,6 +10,6 @@ line_length = 88
 max-line-length = 88
 extend-ignore = [
     "E203",  # whitespace before ':', black does this on purpose
-    "W503"   # line break before binary operator, black prefers this
+    "W503",   # line break before binary operator, black prefers this
 ]
 

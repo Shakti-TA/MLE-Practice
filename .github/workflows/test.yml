@@ -1,6 +1,12 @@
-name: Build and Deploy Python Package
+name: Testing for Correct Installations after Building
 
-on: [push, pull_request]
+on:
+    push:
+      branches:
+        - testing
+    pull_request:
+      branches:
+        - testing
 
 jobs:
   build-and-deploy:
@@ -52,9 +58,9 @@ jobs:
       # Step 9: Install the package
       - name: 📦 Install Built Package
         run: |
-          pip install ./artifact/*.whl
+          pip install dist/*.whl
 
       # Step 10: Run test_installations.py
-      - name: ▶️ Run nonstandardcode.py
+      - name: ▶️ Run test_installations
         run: |
           PYTHONPATH=src pytest tests/test_installations.py
