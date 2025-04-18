@@ -58,7 +58,7 @@ jobs:
 
       # Step 10: Download the build artifact
       - name: ⬇️ Download Build Artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
           path: ./artifact
