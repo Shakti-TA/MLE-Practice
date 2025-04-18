@@ -51,9 +51,9 @@ jobs:
       - name: 🌿 Set up Miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          auto-update-conda: true
-          python-version: 3.10
-          miniconda-version: "latest"
+          auto-activate-base: false
+          activate-environment: mle-dev
+          miniconda-variant: Miniforge3
           environment-file: env.yml  # Make sure this file exists in your repo
 
       # Step 10: Download the build artifact
