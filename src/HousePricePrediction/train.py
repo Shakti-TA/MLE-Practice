@@ -262,6 +262,5 @@ class Data_Train:
 
 if __name__ == "__main__":
     train_data_path = os.path.join("datasets/housing", "train.csv")
-    print(train_data_path)
     obj = Data_Train(train_data_path)
     obj.get_data_train()
