@@ -71,4 +71,4 @@ jobs:
       # Step 12: Run nonstandardcode.py
       - name: ▶️ Run nonstandardcode.py
         run: |
-          python -c "import nonstandardcode; nonstandardcode.main()"
+          python nonstandardcode.py
