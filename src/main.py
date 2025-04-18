@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     test_data_path = os.path.join("datasets/housing", "test.csv")
     data_score_obj = Score(test_data_path)
-    data, labels = obj.get_model_score()
+    data, labels = data_score_obj.get_model_score()
 
     with open("artifacts/final_model.pkl", "rb") as f:
         model = pickle.load(f)

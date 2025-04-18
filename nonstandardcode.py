@@ -86,7 +86,7 @@ corr_matrix = housing.drop(
     ).corr()
 corr_matrix["median_house_value"].sort_values(ascending=False)
 
-##Feature Engineering
+
 housing["rooms_per_household"] = housing["total_rooms"] / housing["households"]
 housing["bedrooms_per_room"] = (
     housing["total_bedrooms"] / housing["total_rooms"]
@@ -195,7 +195,7 @@ sorted(zip(feature_importances, housing_prepared.columns), reverse=True)
 
 final_model = grid_search.best_estimator_
 
-##Testing Part
+
 X_test = strat_test_set.drop("median_house_value", axis=1)
 y_test = strat_test_set["median_house_value"].copy()
 

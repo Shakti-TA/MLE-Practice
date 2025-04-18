@@ -100,6 +100,7 @@ class DataIngestion:
         strat_train_set.to_csv(train_path, index=False, header=True)
         strat_test_set.to_csv(test_path, index=False, header=True)
 
+
 if __name__ == "__main__":
     obj = DataIngestion()
     obj.initiate_data_ingestion()
