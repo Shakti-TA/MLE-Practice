@@ -1,12 +1,12 @@
-name: Build and Deploy Python Package
+name: UnitTest
 
 on:
   push:
     branches:
-      - main
-  # pull_request:
-  #   branches:
-  #     - main
+      - testing
+#   pull_request:
+#     branches:
+#       - testing
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -45,14 +45,7 @@ jobs:
       - name: 📂 Tree After Build
         run: tree -L 3
 
-      # Step 8: Upload the build artifacts
-      - name: ⬆️ Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: dist/
-
-      # Step 9: Set up Conda (for running)
+      # Step 8: Set up Conda (for running)
       - name: 🌿 Set up Miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -61,19 +54,14 @@ jobs:
           miniconda-variant: Miniforge3
           environment-file: env.yml
 
-      # Step 10: Download the build artifact
-      - name: ⬇️ Download Build Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-          path: ./artifact
 
-      # Step 11: Install the package
-      - name: 📦 Install Built Package
+      # Step 9: Install the package
+      - name: 📦 Install  Package in Dev mode
         run: |
-          pip install ./artifact/*.whl
+          pip install -e .
 
-      # Step 12: Run nonstandardcode.py
-      - name: ▶️ Run nonstandardcode.py
+      # Step 10: Install the package
+      - name: 📦 RUn Unit_tests
         run: |
-          python nonstandardcode.py
+          pytest tests/unit_test.py
+
