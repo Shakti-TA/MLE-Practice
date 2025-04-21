@@ -60,7 +60,13 @@ jobs:
         run: |
           pip install -e .
 
-      # Step 10: Install the package
+
+      # Step 10: Get the input data from ingest_data
+      - name: 📦 Get input data
+        run: |
+          python3 src/HousePricePrediction/ingest_data.py
+
+      # Step 11: Run the Unit tests
       - name: 📦 RUn Unit_tests
         run: |
           pytest tests/unit_test.py
