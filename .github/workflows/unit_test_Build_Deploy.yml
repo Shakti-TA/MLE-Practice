@@ -1,0 +1,167 @@
+name: UnitTest, Build and Deploy
+
+on:
+  push:
+    branches:
+      - testing
+#   pull_request:
+#     branches:
+#       - testing
+jobs:
+  jobs1:
+    name: Unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: 🔄 Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python environment (for building)
+      - name: 🛠️ Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # Step 3: Install dependencies (setuptools, wheel)
+      - name: 📦 Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel
+
+      # Step 4: Install tree CLI tool
+      - name: 🌳 Install `tree`
+        run: sudo apt-get install -y tree
+
+      # Step 5: Show directory tree (before build)
+      - name: 📂 Tree Before Build
+        run: tree -L 3
+
+      # Step 6: Build the package
+      - name: 🏗️ Build the Package
+        run: |
+          python setup.py sdist bdist_wheel
+
+      # Step 7: Show directory tree (after build)
+      - name: 📂 Tree After Build
+        run: tree -L 3
+
+      # Step 8: Set up Conda (for running)
+      - name: 🌿 Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: false
+          activate-environment: mle-dev
+          miniconda-variant: Miniforge3
+          environment-file: env.yml
+
+
+      # Step 9: Install the package
+      - name: 📦 Install  Package in Dev mode
+        run: |
+          pip install -e .
+
+
+      # Step 10: Get the input data from ingest_data
+      - name: 📦 Get input data
+        run: |
+          python3 src/HousePricePrediction/ingest_data.py
+
+      # Step 11: Run the Unit tests
+      - name: 📦 RUn Unit_tests
+        run: |
+          pytest tests/unit_test.py
+
+  jobs2:
+    name: Build jobs
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: 🔄 Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python environment (for building)
+      - name: 🛠️ Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # Step 3: Install dependencies (setuptools, wheel)
+      - name: 📦 Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel
+
+
+      # Step 4: Build the package
+      - name: 🏗️ Build the Package
+        run: |
+          python setup.py sdist bdist_wheel
+
+      # Step 5: Set up Conda (for running)
+      - name: 🌿 Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: false
+          activate-environment: mle-dev
+          miniconda-variant: Miniforge3
+          environment-file: env.yml  # Make sure this file exists in your repo
+
+      # Step 6: Install the package
+      - name: 📦 Install Built Package
+        run: |
+          pip install dist/*.whl
+
+      # Step 7: Run test_installations.py
+      - name: ▶️ Run test_installations
+        run: |
+          PYTHONPATH=src pytest tests/test_installations.py
+
+      # Step 8: Upload the build artifacts
+      - name: ⬆️ Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+
+
+  jobs3:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: jobs2
+
+    steps:
+
+      # Step 1: Download the build artifact
+      - name: ⬇️ Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: ./artifact
+
+      # Step 2: Set up Conda (for running)
+      - name: 🌿 Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: false
+          activate-environment: mle-dev
+          miniconda-variant: Miniforge3
+          environment-file: env.yml
+
+
+      # Step 3: Install the package
+      - name: 📦 Install Built Package
+        run: |
+          pip install ./artifact/*.whl
+
+
+      # Step 4: Install the package
+      - name: Run script in help mode
+        run: |
+          python3 Script/ingest_data_script.py -h
+
+      # Step 5: Install the package
+      - name: Run script default
+        run: |
+          python3 Script/ingest_data_script.py
