@@ -47,13 +47,12 @@ jobs:
         run: tree -L 3
 
       # Step 8: Set up Conda (for running)
-      - name: 🌿 Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v2
         with:
-          auto-activate-base: false
-          activate-environment: mle-dev
-          miniconda-variant: Miniforge3
+          miniconda-version: "latest"
           environment-file: env.yml
+          activate-environment: mle-dev
+          auto-update-conda: true
 
 
       # Step 9: Install the package
@@ -100,13 +99,12 @@ jobs:
           python setup.py sdist bdist_wheel
 
       # Step 5: Set up Conda (for running)
-      - name: 🌿 Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v2
         with:
-          auto-activate-base: false
+          miniconda-version: "latest"
+          environment-file: env.yml
           activate-environment: mle-dev
-          miniconda-variant: Miniforge3
-          environment-file: env.yml  # Make sure this file exists in your repo
+          auto-update-conda: true
 
       # Step 6: Install the package
       - name: 📦 Install Built Package
@@ -141,13 +139,12 @@ jobs:
           path: ./artifact
 
       # Step 2: Set up Conda (for running)
-      - name: 🌿 Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v2
         with:
-          auto-activate-base: false
-          activate-environment: mle-dev
-          miniconda-variant: Miniforge3
+          miniconda-version: "latest"
           environment-file: env.yml
+          activate-environment: mle-dev
+          auto-update-conda: true
 
 
       # Step 3: Install the package
