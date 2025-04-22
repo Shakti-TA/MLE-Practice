@@ -11,7 +11,6 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import (
     GridSearchCV,
     RandomizedSearchCV,
-
 )
 from sklearn.tree import DecisionTreeRegressor
 
@@ -34,7 +33,7 @@ def get_features(housing):
     """
     housing["rooms_per_household"] = (
         housing["total_rooms"] / housing["households"]
-        )
+    )
     housing["bedrooms_per_room"] = (
         housing["total_bedrooms"] / housing["total_rooms"]
     )
@@ -171,7 +170,8 @@ def Best_Model(housing_prepared, housing_labels):
         # try 12 (3×4) combinations of hyperparameters
         {"n_estimators": [3, 10, 30], "max_features": [2, 4, 6, 8]},
         # then try 6 (2×3) combinations with bootstrap set as False
-        {"bootstrap": [False], "n_estimators": [3, 10],
+        {"bootstrap": [False],
+         "n_estimators": [3, 10],
          "max_features": [2, 3, 4]},
     ]
 
@@ -239,9 +239,10 @@ class Data_Train:
 
         # NUMERICAL COLUMNS
         housing_num, X = SimpleImputing(housing)
-        housing_tr = pd.DataFrame(X,
-                                  columns=housing_num.columns,
-                                  index=housing.index)
+        housing_tr = pd.DataFrame(
+            X,
+            columns=housing_num.columns,
+            index=housing.index)
         housing_tr = get_features(housing_tr)
 
         # CATEGORICAL COLUMNS
@@ -258,9 +259,3 @@ class Data_Train:
 
         # SAVE THE BEST MODEL
         saving(best_model_rnd_frst)
-
-
-if __name__ == "__main__":
-    train_data_path = os.path.join("datasets/housing", "train.csv")
-    obj = Data_Train(train_data_path)
-    obj.get_data_train()

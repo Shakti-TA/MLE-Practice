@@ -70,8 +70,9 @@ def str_split(housing, test_sizes=0.2):
     )
 
     split = StratifiedShuffleSplit(
-        n_splits=1, test_size=test_sizes, random_state=42
-        )
+        n_splits=1,
+        test_size=test_sizes,
+        random_state=42)
     for train_index, test_index in split.split(housing, housing["income_cat"]):
         strat_train_set = housing.loc[train_index]
         strat_test_set = housing.loc[test_index]
@@ -99,8 +100,3 @@ class DataIngestion:
 
         strat_train_set.to_csv(train_path, index=False, header=True)
         strat_test_set.to_csv(test_path, index=False, header=True)
-
-
-if __name__ == "__main__":
-    obj = DataIngestion()
-    obj.initiate_data_ingestion()

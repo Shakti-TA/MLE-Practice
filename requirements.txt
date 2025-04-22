@@ -7,3 +7,6 @@ six
 Black
 isort
 flake8
+pytest
+
+-e .

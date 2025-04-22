@@ -2,6 +2,7 @@ from typing import List
 
 from setuptools import find_packages, setup
 
+HYPEN_E_DOT='-e .'
 
 def get_requirements(file_path: str) -> List[str]:
     """
@@ -13,12 +14,15 @@ def get_requirements(file_path: str) -> List[str]:
         requirements = file_obj.readlines()
         requirements = [req.replace("\n", "") for req in requirements]
 
+
+        if HYPEN_E_DOT in requirements:
+            requirements.remove(HYPEN_E_DOT)
+
     return requirements
 
 
 setup(
     name="MLE-Practice",
-    version="0.0.1",
     author="Shakti Lakhera",
     author_email="shakti.lakhera@tigeranalytics.com",
     packages=find_packages(),

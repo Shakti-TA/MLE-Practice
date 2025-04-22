@@ -1,9 +1,9 @@
-import os
 import pickle
+
 import numpy as np
 import pandas as pd
-from sklearn.metrics import mean_squared_error
 from sklearn.impute import SimpleImputer
+from sklearn.metrics import mean_squared_error
 
 
 def get_features(housing):
@@ -63,7 +63,7 @@ class Score:
         self.test_path = test_path
         self.test_df = pd.read_csv(self.test_path)
 
-    def get_model_score(self):
+    def get_data(self):
         housing = self.test_df.drop(
             "median_house_value", axis=1
         )  # drop labels for training set
@@ -84,17 +84,14 @@ class Score:
 
         return housing_prepared, housing_labels
 
+    def get_model_score(self, data, labels):
 
-if __name__ == "__main__":
-    test_data_path = os.path.join("datasets/housing", "test.csv")
-    obj = Score(test_data_path)
-    data, labels = obj.get_model_score()
+        with open("artifacts/final_model.pkl", "rb") as f:
+            model = pickle.load(f)
 
-    with open("artifacts/final_model.pkl", "rb") as f:
-        model = pickle.load(f)
+        final_predictions = model.predict(data)
+        final_mse = mean_squared_error(labels, final_predictions)
+        final_rmse = np.sqrt(final_mse)
 
-    final_predictions = model.predict(data)
-    final_mse = mean_squared_error(labels, final_predictions)
-    final_rmse = np.sqrt(final_mse)
-
-    print(f"Test data RMSE score: {final_rmse: .2f}")
+        print(f"Test data RMSE score: {final_rmse: .2f}")
+        return final_rmse
