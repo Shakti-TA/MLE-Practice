@@ -67,7 +67,7 @@ jobs:
           python3 src/HousePricePrediction/ingest_data.py
 
       # Step 11: Run the Unit tests
-      - name: 📦 RUn Unit_tests
+      - name: 📦 Run Unit_tests
         run: |
           pytest tests/unit_test.py
 
@@ -131,15 +131,17 @@ jobs:
     needs: jobs2
 
     steps:
+      # Step 1: Checkout the repository
+      - name: 🔄 Checkout Repository
+        uses: actions/checkout@v3
 
-      # Step 1: Download the build artifact
-      - name: ⬇️ Download Build Artifact
-        uses: actions/download-artifact@v4
+      # Step 2: Set up Python environment (for building)
+      - name: 🛠️ Set up Python
+        uses: actions/setup-python@v4
         with:
-          name: build-artifacts
-          path: ./artifact
+          python-version: '3.10'
 
-      # Step 2: Set up Conda (for running)
+      # Step 3: Set up Conda (for running)
       - name: ⚙️ Set up Conda Environment
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -148,19 +150,25 @@ jobs:
           environment-file: env.yml
           use-mamba: true
 
+      # Step 4: Download the build artifact
+      - name: ⬇️ Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: ./artifact
 
-      # Step 3: Install the package
+      # Step 5: Install the package
       - name: 📦 Install Built Package
         run: |
           pip install ./artifact/*.whl
 
 
-      # Step 4: Install the package
+      # Step 6: Run script -h mode
       - name: Run script in help mode
         run: |
           python3 Script/ingest_data_script.py -h
 
-      # Step 5: Install the package
+      # Step 7: Run Script default mode
       - name: Run script default
         run: |
           python3 Script/ingest_data_script.py
