@@ -1,9 +1,9 @@
 name: Testing for Correct Installations after Building
 
 on:
-    push:
-      branches:
-        - testing
+    # push:
+    #   branches:
+    #     - testing
     # pull_request:
     #   branches:
     #     - testing

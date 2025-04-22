@@ -1,12 +1,13 @@
-name: UnitTest, Build and Deploy
+name: UnitTest
 
 on:
   push:
     branches:
       - testing
-#   pull_request:
-#     branches:
-#       - testing
+  # pull_request:
+  #   branches:
+  #     - testing
+
 jobs:
   jobs1:
     name: Unit tests
@@ -17,13 +18,13 @@ jobs:
       - name: 🔄 Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python environment (for building)
+      # Step 2: Set up Python (needed for pip)
       - name: 🛠️ Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      # Step 3: Set up Conda (for running)
+      # Step 3: Set up Conda environment
       - name: ⚙️ Set up Conda Environment
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -31,10 +32,13 @@ jobs:
           activate-environment: mle-dev
           environment-file: env.yml
           use-mamba: true
+          auto-activate-base: false
 
-      # Step 4: Install dependencies (setuptools, wheel)
+      # Step 4: Install build dependencies
       - name: 📦 Install build dependencies
         run: |
+          source ~/.bashrc
+          conda activate mle-dev
           python -m pip install --upgrade pip
           pip install setuptools wheel
 
@@ -49,26 +53,38 @@ jobs:
       # Step 7: Build the package
       - name: 🏗️ Build the Package
         run: |
+          source ~/.bashrc
+          conda activate mle-dev
           python setup.py sdist bdist_wheel
 
       # Step 8: Show directory tree (after build)
       - name: 📂 Tree After Build
         run: tree -L 3
 
-
-      # Step 9: Install the package
-      - name: 📦 Install  Package in Dev mode
+      # Step 9: Install the package in dev mode
+      - name: 📦 Install Package in Dev mode
         run: |
+          source ~/.bashrc
+          conda activate mle-dev
           pip install -e .
-
 
       # Step 10: Get the input data from ingest_data
       - name: 📦 Get input data
         run: |
-          python3 src/HousePricePrediction/ingest_data.py
+          source ~/.bashrc
+          conda activate mle-dev
+          python src/HousePricePrediction/ingest_data.py
 
-
-      # Step 11: Run the Unit tests
-      - name: 📦 Run Unit_tests
+      # Step 11: (Optional) Print scikit-learn version
+      - name: 🔍 Confirm scikit-learn version
         run: |
+          source ~/.bashrc
+          conda activate mle-dev
+          python -c "import sklearn; print('scikit-learn version:', sklearn.__version__)"
+
+      # Step 12: Run the Unit tests
+      - name: ✅ Run Unit Tests
+        run: |
+          source ~/.bashrc
+          conda activate mle-dev
           pytest tests/unit_test.py
