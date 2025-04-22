@@ -23,7 +23,6 @@ def get_requirements(file_path: str) -> List[str]:
 
 setup(
     name="MLE-Practice",
-    version="0.0.1",
     author="Shakti Lakhera",
     author_email="shakti.lakhera@tigeranalytics.com",
     packages=find_packages(),

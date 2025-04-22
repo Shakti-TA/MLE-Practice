@@ -47,14 +47,13 @@ jobs:
         run: tree -L 3
 
       # Step 8: Set up Conda (for running)
-      - name: Set up Miniconda
+      - name: ⚙️ Set up Conda Environment
         uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
-          environment-file: env.yml
           activate-environment: mle-dev
+          environment-file: env.yml
           use-mamba: true
-
 
       # Step 9: Install the package
       - name: 📦 Install  Package in Dev mode
@@ -100,12 +99,12 @@ jobs:
           python setup.py sdist bdist_wheel
 
       # Step 5: Set up Conda (for running)
-      - name: Set up Miniconda
+      - name: ⚙️ Set up Conda Environment
         uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
-          environment-file: env.yml
           activate-environment: mle-dev
+          environment-file: env.yml
           use-mamba: true
 
       # Step 6: Install the package
@@ -141,14 +140,13 @@ jobs:
           path: ./artifact
 
       # Step 2: Set up Conda (for running)
-      - name: Set up Miniconda
+      - name: ⚙️ Set up Conda Environment
         uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
-          environment-file: env.yml
           activate-environment: mle-dev
+          environment-file: env.yml
           use-mamba: true
-
 
 
       # Step 3: Install the package
