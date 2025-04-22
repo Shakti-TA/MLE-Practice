@@ -31,7 +31,6 @@ jobs:
       # Step 3: Install build dependencies
       - name: 📦 Install build dependencies
         run: |
-          source ~/.bashrc
           python -m pip install --upgrade pip
           pip install setuptools wheel
 
@@ -46,7 +45,6 @@ jobs:
       # Step 6: Build the package
       - name: 🏗️ Build the Package
         run: |
-          source ~/.bashrc
           python setup.py sdist bdist_wheel
 
       # Step 7: Show directory tree (after build)
@@ -56,17 +54,14 @@ jobs:
       # Step 8: Install the package in dev mode
       - name: 📦 Install Package in Dev mode
         run: |
-          source ~/.bashrc
           pip install -e .
 
       # Step 9: Get the input data from ingest_data
       - name: 📦 Get input data
         run: |
-          source ~/.bashrc
           python src/HousePricePrediction/ingest_data.py
 
       # Step 10: Run the Unit tests
       - name: ✅ Run Unit Tests
         run: |
-          source ~/.bashrc
           pytest tests/unit_test.py
