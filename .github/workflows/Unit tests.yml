@@ -18,13 +18,7 @@ jobs:
       - name: 🔄 Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python (needed for pip)
-      - name: 🛠️ Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      # Step 3: Set up Conda environment
+      # Step 2: Set up Conda environment
       - name: ⚙️ Set up Conda Environment
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -34,57 +28,45 @@ jobs:
           use-mamba: true
           auto-activate-base: false
 
-      # Step 4: Install build dependencies
+      # Step 3: Install build dependencies
       - name: 📦 Install build dependencies
         run: |
           source ~/.bashrc
-          conda activate mle-dev
           python -m pip install --upgrade pip
           pip install setuptools wheel
 
-      # Step 5: Install tree CLI tool
+      # Step 4: Install tree CLI tool
       - name: 🌳 Install `tree`
         run: sudo apt-get install -y tree
 
-      # Step 6: Show directory tree (before build)
+      # Step 5: Show directory tree (before build)
       - name: 📂 Tree Before Build
         run: tree -L 3
 
-      # Step 7: Build the package
+      # Step 6: Build the package
       - name: 🏗️ Build the Package
         run: |
           source ~/.bashrc
-          conda activate mle-dev
           python setup.py sdist bdist_wheel
 
-      # Step 8: Show directory tree (after build)
+      # Step 7: Show directory tree (after build)
       - name: 📂 Tree After Build
         run: tree -L 3
 
-      # Step 9: Install the package in dev mode
+      # Step 8: Install the package in dev mode
       - name: 📦 Install Package in Dev mode
         run: |
           source ~/.bashrc
-          conda activate mle-dev
           pip install -e .
 
-      # Step 10: Get the input data from ingest_data
+      # Step 9: Get the input data from ingest_data
       - name: 📦 Get input data
         run: |
           source ~/.bashrc
-          conda activate mle-dev
           python src/HousePricePrediction/ingest_data.py
 
-      # Step 11: (Optional) Print scikit-learn version
-      - name: 🔍 Confirm scikit-learn version
-        run: |
-          source ~/.bashrc
-          conda activate mle-dev
-          python -c "import sklearn; print('scikit-learn version:', sklearn.__version__)"
-
-      # Step 12: Run the Unit tests
+      # Step 10: Run the Unit tests
       - name: ✅ Run Unit Tests
         run: |
           source ~/.bashrc
-          conda activate mle-dev
           pytest tests/unit_test.py
