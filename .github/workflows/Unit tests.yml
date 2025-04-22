@@ -67,6 +67,7 @@ jobs:
         run: |
           python3 src/HousePricePrediction/ingest_data.py
 
+
       # Step 11: Run the Unit tests
       - name: 📦 Run Unit_tests
         run: |
