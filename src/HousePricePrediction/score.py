@@ -94,3 +94,4 @@ class Score:
         final_rmse = np.sqrt(final_mse)
 
         print(f"Test data RMSE score: {final_rmse: .2f}")
+        return final_rmse

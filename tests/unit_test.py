@@ -6,6 +6,7 @@ import pandas as pd
 
 from HousePricePrediction.ingest_data import load_housing_data, str_split
 from HousePricePrediction.train import SimpleImputing, get_features
+from HousePricePrediction.score import Score
 
 
 class TestDataIngestion(unittest.TestCase):
@@ -111,6 +112,19 @@ class TestTrain(unittest.TestCase):
 
         for cat in cat_col:
             self.assertNotIn(cat, housing_num.columns)
+
+
+class TestScore(unittest.TestCase):
+    def setUp(self):
+        self.test_path = os.path.join("datasets/housing", "test.csv")
+        self.obj = Score(self.test_path)
+        self.data, self.labels = self.obj.get_data()
+
+    def test_get_model_score(self):
+        final_rmse = self.obj.get_model_score(self.data, self.labels)
+
+        # Check if final_rmse is equal to 48844.50
+        self.assertEqual(int(final_rmse), 48844)
 
 
 # if __name__ == '__main__':
