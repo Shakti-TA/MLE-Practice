@@ -64,7 +64,7 @@ jobs:
       # Step 10: Get the input data from ingest_data
       - name: 📦 Get input data
         run: |
-          python3 src/HousePricePrediction/ingest_data.py
+          python3 Script/ingest_data_script.py
 
       # Step 11: Run the Unit tests
       - name: 📦 Run Unit_tests
