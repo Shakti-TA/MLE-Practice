@@ -8,7 +8,7 @@ on:
 #     branches:
 #       - testing
 jobs:
-  jobs1:
+  unit-tests:
     name: Unit tests
     runs-on: ubuntu-latest
 
@@ -71,7 +71,7 @@ jobs:
         run: |
           pytest tests/unit_test.py
 
-  jobs2:
+  Build:
     name: Build jobs
     runs-on: ubuntu-latest
 
@@ -119,17 +119,14 @@ jobs:
           path: dist/
 
 
-  jobs3:
+  Deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: jobs2
+    needs: Build
 
     steps:
-      # Step 1: Checkout the repository
-      - name: 🔄 Checkout Repository
-        uses: actions/checkout@v3
 
-      # Step 2: Set up Conda (for running)
+      # Step 1: Set up Conda (for running)
       - name: ⚙️ Set up Conda Environment
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -138,25 +135,25 @@ jobs:
           environment-file: env.yml
           use-mamba: true
 
-      # Step 3: Download the build artifact
+      # Step 2: Download the build artifact
       - name: ⬇️ Download Build Artifact
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
           path: ./artifact
 
-      # Step 4: Install the package
+      # Step 3: Install the package
       - name: 📦 Install Built Package
         run: |
           pip install ./artifact/*.whl
 
 
-      # Step 5: Run script -h mode
+      # Step 4: Run script -h mode
       - name: Run script in help mode
         run: |
           python3 Script/ingest_data_script.py -h
 
-      # Step 6: Run Script default mode
+      # Step 5: Run Script default mode
       - name: Run script default
         run: |
           python3 Script/ingest_data_script.py
