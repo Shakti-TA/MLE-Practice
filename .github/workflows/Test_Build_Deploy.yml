@@ -119,6 +119,21 @@ jobs:
           path: dist/
 
 
+      # Step 8: Upload env.yml as artifact
+      - name: ⬆️ Upload env.yml artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: env-file
+          path: env.yml
+
+      # Step 9: Upload scripts and code
+      - name: ⬆️ Upload Scripts Artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: code-artifacts
+            path: Script/ingest_data_script.py
+
+
   Deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -126,7 +141,14 @@ jobs:
 
     steps:
 
-      # Step 1: Set up Conda (for running)
+      # Step 1: Download env.yml artifact
+      - name: ⬇️ Download env.yml artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: env-file
+          path: .
+
+      # Step 2: Set up Conda (for running)
       - name: ⚙️ Set up Conda Environment
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -135,25 +157,32 @@ jobs:
           environment-file: env.yml
           use-mamba: true
 
-      # Step 2: Download the build artifact
+      # Step 3: Download the build artifact
       - name: ⬇️ Download Build Artifact
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
           path: ./artifact
 
-      # Step 3: Install the package
+      # Step 4: Download code artifacts (scripts like ingest_data_script.py)
+      - name: ⬇️ Download Code Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: code-artifacts
+          path: ./Script
+
+      # Step 5: Install the package
       - name: 📦 Install Built Package
         run: |
           pip install ./artifact/*.whl
 
 
-      # Step 4: Run script -h mode
+      # Step 6: Run script -h mode
       - name: Run script in help mode
         run: |
           python3 Script/ingest_data_script.py -h
 
-      # Step 5: Run Script default mode
+      # Step 7: Run Script default mode
       - name: Run script default
         run: |
           python3 Script/ingest_data_script.py
