@@ -1,0 +1,73 @@
+name: UnitTest
+
+on:
+  push:
+    branches:
+      - testing
+  # pull_request:
+  #   branches:
+  #     - testing
+
+jobs:
+  jobs1:
+    name: Unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: 🔄 Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Conda environment
+      - name: ⚙️ Set up Conda Environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          activate-environment: mle-dev
+          environment-file: env.yml
+          use-mamba: true
+          auto-activate-base: false
+
+      # Step 3: Install build dependencies
+      - name: 📦 Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel
+
+      # Step 4: Install tree CLI tool
+      - name: 🌳 Install `tree`
+        run: sudo apt-get install -y tree
+
+      # Step 5: Show directory tree (before build)
+      - name: 📂 Tree Before Build
+        run: tree -L 3
+
+      # Step 6: Build the package
+      - name: 🏗️ Build the Package
+        run: |
+          python setup.py sdist bdist_wheel
+
+      # Step 7: Show directory tree (after build)
+      - name: 📂 Tree After Build
+        run: tree -L 3
+
+      # Step 8: Install the package in dev mode
+      - name: 📦 Install Package in Dev mode
+        run: |
+          pip install -e .
+
+      # Step 9: Get the input data from ingest_data
+      - name: 📦 Get input data
+        run: |
+          python src/HousePricePrediction/ingest_data.py
+
+      #Downgrade the Scikit-learn version to 1.3.2
+      - name: Install scikit-learn version 1.3.2
+        run: |
+          pip install scikit-learn==1.3.2
+
+
+      # Step 10: Run the Unit tests
+      - name: ✅ Run Unit Tests
+        run: |
+          pytest tests/unit_test.py
