@@ -6,6 +6,13 @@ import pandas as pd
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_squared_error
 
+from Script.logger import setup_logger
+
+# If want to log in log_file uncomment down
+# logger = setup_logger(log_to_file=True, log_to_console=False, log_level='INFO')
+
+# If want to log in the console uncomment down
+logger = setup_logger(log_to_file=False, log_to_console=True, log_level='INFO')
 
 def get_features(housing):
     """
@@ -23,16 +30,21 @@ def get_features(housing):
     housing : pandas dataframe
               dataframe with 3 new features
     """
-    housing["rooms_per_household"] = (
-        housing["total_rooms"] / housing["households"]
-    )
-    housing["bedrooms_per_room"] = (
-        housing["total_bedrooms"] / housing["total_rooms"]
-    )
-    housing["population_per_household"] = (
-        housing["population"] / housing["households"]
-    )
-    return housing
+    try:
+        housing["rooms_per_household"] = (
+            housing["total_rooms"] / housing["households"]
+        )
+        housing["bedrooms_per_room"] = (
+            housing["total_bedrooms"] / housing["total_rooms"]
+        )
+        housing["population_per_household"] = (
+            housing["population"] / housing["households"]
+        )
+        logger.info("New features: rooms_per_household, bedrooms_per_room and population_per_household added")
+        return housing
+
+    except Exception as e:
+        logger.error("Unable to create new features!")
 
 
 def SimpleImputing(housing):
@@ -50,13 +62,19 @@ def SimpleImputing(housing):
     X : pandas dataframe
        dataframe with imputed values
     """
-    imputer = SimpleImputer(strategy="median")
+    try:
+        imputer = SimpleImputer(strategy="median")
 
-    housing_num = housing.drop("ocean_proximity", axis=1)
+        housing_num = housing.drop("ocean_proximity", axis=1)
 
-    imputer.fit(housing_num)
-    X = imputer.transform(housing_num)
-    return housing_num, X
+        imputer.fit(housing_num)
+        X = imputer.transform(housing_num)
+
+        logger.info("Nmerical data separated and  Imputing is done")
+        return housing_num, X
+
+    except Exception as e:
+        logger.error("Unable to do Imputation!")
 
 
 class Score:

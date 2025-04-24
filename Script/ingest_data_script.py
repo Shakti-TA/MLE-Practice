@@ -7,6 +7,13 @@ import pandas as pd
 from six.moves import urllib
 from sklearn.model_selection import StratifiedShuffleSplit
 
+from Script.logger import setup_logger
+
+# If want to log in log_file uncomment down
+# logger = setup_logger(log_to_file=True, log_to_console=False, log_level='INFO')
+
+# If want to log in the console uncomment down
+logger = setup_logger(log_to_file=False, log_to_console=True, log_level='INFO')
 
 def fetch_housing_data(housing_url, housing_path):
     """
@@ -25,12 +32,19 @@ def fetch_housing_data(housing_url, housing_path):
     -------
     None
     """
-    os.makedirs(housing_path, exist_ok=True)
-    tgz_path = os.path.join(housing_path, "housing.tgz")
-    urllib.request.urlretrieve(housing_url, tgz_path)
-    housing_tgz = tarfile.open(tgz_path)
-    housing_tgz.extractall(path=housing_path)
-    housing_tgz.close()
+    try:
+        os.makedirs(housing_path, exist_ok=True)
+        tgz_path = os.path.join(housing_path, "housing.tgz")
+        urllib.request.urlretrieve(housing_url, tgz_path)
+        housing_tgz = tarfile.open(tgz_path)
+        housing_tgz.extractall(path=housing_path)
+        housing_tgz.close()
+
+        logger.info("Housing data fetched from the web and saved into the path: '%s'", housing_path)
+
+    except Exception as e:
+
+        logger.error("Unable to fetch data from the web: %s", str(e))
 
 
 def load_housing_data(housing_path):
@@ -46,8 +60,15 @@ def load_housing_data(housing_path):
     -------
     pandas dataframe
     """
-    csv_path = os.path.join(housing_path, "housing.csv")
-    return pd.read_csv(csv_path)
+    try:
+        csv_path = os.path.join(housing_path, "housing.csv")
+        df = pd.read_csv(csv_path)
+        logger.info("Housing data successfully read from '%s'", csv_path)
+        return df
+    except Exception as e:
+        logger.error("Unable to read data or data is absent: %s", str(e))
+        return None
+
 
 
 def str_split(housing, test_sizes=0.2):
@@ -64,20 +85,26 @@ def str_split(housing, test_sizes=0.2):
     Strat_test_set: Stratified Test set
     """
 
-    housing["income_cat"] = pd.cut(
-        housing["median_income"],
-        bins=[0.0, 1.5, 3.0, 4.5, 6.0, np.inf],
-        labels=[1, 2, 3, 4, 5],
-    )
-
-    split = StratifiedShuffleSplit(
-        n_splits=1, test_size=test_sizes, random_state=42
+    try:
+        housing["income_cat"] = pd.cut(
+            housing["median_income"],
+            bins=[0.0, 1.5, 3.0, 4.5, 6.0, np.inf],
+            labels=[1, 2, 3, 4, 5],
         )
-    for train_index, test_index in split.split(housing, housing["income_cat"]):
-        strat_train_set = housing.loc[train_index]
-        strat_test_set = housing.loc[test_index]
 
-    return strat_train_set, strat_test_set
+        split = StratifiedShuffleSplit(
+            n_splits=1, test_size=test_sizes, random_state=42
+            )
+        for train_index, test_index in split.split(housing, housing["income_cat"]):
+            strat_train_set = housing.loc[train_index]
+            strat_test_set = housing.loc[test_index]
+
+        logger.info("Splitting is done!")
+
+        return strat_train_set, strat_test_set
+    except Exception as e:
+        logger.error("Unable to perform train-test split: %s", str(e))
+        return None, None
 
 
 class DataIngestion:
