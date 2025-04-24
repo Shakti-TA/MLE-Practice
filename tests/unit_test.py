@@ -119,7 +119,7 @@ class TestScore(unittest.TestCase):
         self.test_path = os.path.join("datasets/housing", "test.csv")
         self.obj = Score(self.test_path)
         self.data, self.labels = self.obj.get_data()
-
+ 
     def test_get_model_score(self):
         final_rmse = self.obj.get_model_score(self.data, self.labels)
 
