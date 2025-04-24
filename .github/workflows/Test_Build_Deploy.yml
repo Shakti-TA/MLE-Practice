@@ -8,7 +8,7 @@ on:
 #     branches:
 #       - testing
 jobs:
-  unit-tests:
+  Unit-test:
     name: Unit tests
     runs-on: ubuntu-latest
 
@@ -119,70 +119,42 @@ jobs:
           path: dist/
 
 
-      # Step 8: Upload env.yml as artifact
-      - name: ⬆️ Upload env.yml artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: env-file
-          path: env.yml
-
-      # Step 9: Upload scripts and code
-      - name: ⬆️ Upload Scripts Artifact
-        uses: actions/upload-artifact@v4
-        with:
-            name: code-artifacts
-            path: Script/ingest_data_script.py
-
-
   Deploy:
     name: Deploy
     runs-on: ubuntu-latest
     needs: Build
 
     steps:
-
-      # Step 1: Download env.yml artifact
-      - name: ⬇️ Download env.yml artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: env-file
-          path: .
-
-      # Step 2: Set up Conda (for running)
-      - name: ⚙️ Set up Conda Environment
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          auto-update-conda: true
-          activate-environment: mle-dev
-          environment-file: env.yml
-          use-mamba: true
-
-      # Step 3: Download the build artifact
+      # Step 1: Download the build artifact
       - name: ⬇️ Download Build Artifact
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
           path: ./artifact
 
-      # Step 4: Download code artifacts (scripts like ingest_data_script.py)
-      - name: ⬇️ Download Code Artifact
-        uses: actions/download-artifact@v4
+      # Step 2: Set-up conda
+      - name: ⚙️ Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
         with:
-          name: code-artifacts
-          path: ./Script
+          auto-update-conda: true
+          environment-file: ""
+          activate-environment: mle-dev
+          python-version: 3.8
 
-      # Step 5: Install the package
+
+      # Step 3: Install the package
       - name: 📦 Install Built Package
         run: |
           pip install ./artifact/*.whl
 
 
-      # Step 6: Run script -h mode
+      # Step 4: Run script -h mode
       - name: Run script in help mode
         run: |
           python3 Script/ingest_data_script.py -h
 
-      # Step 7: Run Script default mode
+      # Step 5: Run Script default mode
       - name: Run script default
         run: |
           python3 Script/ingest_data_script.py
+
