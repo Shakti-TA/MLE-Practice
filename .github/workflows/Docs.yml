@@ -10,7 +10,7 @@ on:
 
 jobs:
   build_docs:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
     # Step 1: Checkout code
@@ -48,7 +48,7 @@ jobs:
 
     # Step 7: Upload the built documentation as artifacts
     - name: Upload built documentation
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: docs-html
         path: docs/build/html/
