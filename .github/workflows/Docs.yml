@@ -17,7 +17,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-      # Step 2: Set up Conda (for running)
+    # Step 2: Set up Conda (for running)
     - name: ⚙️ Set up Conda Environment
       uses: conda-incubator/setup-miniconda@v2
       with:
@@ -26,29 +26,29 @@ jobs:
           environment-file: env.yml
           use-mamba: true
 
-    # Step 4: Clean old HTML files in docs/html (if they exist)
+    # Step 3: Clean old HTML files in docs/html (if they exist)
     - name: Clean old HTML files
       run: |
         rm -rf docs/build/html/*
 
-      # Step 5: Show directory tree (before building html)
+    # Step 4: Show directory tree (before building html)
     - name: 📂 Tree Before Building html
       run: |
         tree -L 3
 
-    # Step 6: Build documentation with Sphinx
+    # Step 5: Build documentation with Sphinx
     - name: Build docs using Sphinx
       run: |
         sphinx-build -b html docs/source docs/build/html
 
-    # Step 7: Display directory tree after building docs
+    # Step 6: Display directory tree after building docs
     - name: Display directory tree after building docs\html
       run: |
         tree -L 3
 
-    # Step 8: Upload the built documentation as artifacts
+    # Step 7: Upload the built documentation as artifacts
     - name: Upload built documentation
       uses: actions/upload-artifact@v3
       with:
         name: docs-html
-        path: docs/build/html/ 
+        path: docs/build/html/
