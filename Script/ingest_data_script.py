@@ -44,16 +44,20 @@ def fetch_housing_data(housing_url, housing_path):
 
 def load_housing_data(housing_path):
     """
-    This function read the housing dataset from the the target directory.
+    Load the housing dataset from the specified local directory.
 
-    Parameters:
+    Reads the housing dataset from the target directory where it was previously
+    downloaded and extracted.
+
+    Parameters
     ----------
     housing_path : str
-        The local directory where the dataset will be saved and extracted.
+        Local directory where the dataset is stored.
 
-    Returns:
+    Returns
     -------
-    pandas dataframe
+    pandas.DataFrame
+        The housing dataset loaded into a DataFrame.
     """
     try:
         csv_path = os.path.join(housing_path, "housing.csv")
@@ -68,16 +72,25 @@ def load_housing_data(housing_path):
 
 def str_split(housing, test_sizes=0.2):
     """
-    This function strtified split the data on Median household income
+    Perform stratified sampling of the housing data based on median income.
 
-    Parameters:
-    ---------
-    housing: pandas dataframe
-    test_size: train-test split ratio
+    This function splits the dataset into stratified training and test sets
+    based on the 'median_income' attribute to ensure representative sampling
+    across income categories.
 
-    Returns:
-    Strat_train_set: Stratified Train set
-    Strat_test_set: Stratified Test set
+    Parameters
+    ----------
+    housing : pandas.DataFrame
+        The full housing dataset.
+    test_size : float
+        Proportion of the dataset to include in the test split (e.g., 0.2 for 20%).
+
+    Returns
+    -------
+    strat_train_set : pandas.DataFrame
+        Stratified training subset of the housing data.
+    strat_test_set : pandas.DataFrame
+        Stratified test subset of the housing data.
     """
 
     try:
