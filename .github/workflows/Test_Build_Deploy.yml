@@ -148,14 +148,13 @@ jobs:
           pip install ./artifact/*.whl
 
 
-      # Step 4: Run script -h mode
-      - name: Run script in help mode
+      # Step 4: Run logger script ot console
+      - name: Run logger script to console
         run: |
-          python -m Script.ingest_data_script -h
+          python -m Script.ingest_data_script --log_to_file False --log_to_console True --log_level DEBUG
+          python -m Script.train_script --log_to_file False --log_to_console True --log_level DEBUG
+          python -m Script.score_script --log_to_file False --log_to_console True --log_level DEBUG
 
-      # Step 5: Run Script default mode
-      - name: Run script default
-        run: |
-          python -m Script.ingest_data_script 
+
 
 

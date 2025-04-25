@@ -1,9 +1,9 @@
 name: Build and Deploy Python Package
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   # pull_request:
   #   branches:
   #     - main

@@ -6,6 +6,7 @@ import pandas as pd
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_squared_error
 
+from Script.logger import setup_logger
 
 def get_features(housing):
     """
@@ -23,16 +24,21 @@ def get_features(housing):
     housing : pandas dataframe
               dataframe with 3 new features
     """
-    housing["rooms_per_household"] = (
-        housing["total_rooms"] / housing["households"]
-    )
-    housing["bedrooms_per_room"] = (
-        housing["total_bedrooms"] / housing["total_rooms"]
-    )
-    housing["population_per_household"] = (
-        housing["population"] / housing["households"]
-    )
-    return housing
+    try:
+        housing["rooms_per_household"] = (
+            housing["total_rooms"] / housing["households"]
+        )
+        housing["bedrooms_per_room"] = (
+            housing["total_bedrooms"] / housing["total_rooms"]
+        )
+        housing["population_per_household"] = (
+            housing["population"] / housing["households"]
+        )
+        logger.info("New features: rooms_per_household, bedrooms_per_room and population_per_household added")
+        return housing
+
+    except Exception as e:
+        logger.error("Unable to create new features!")
 
 
 def SimpleImputing(housing):
@@ -50,13 +56,19 @@ def SimpleImputing(housing):
     X : pandas dataframe
        dataframe with imputed values
     """
-    imputer = SimpleImputer(strategy="median")
+    try:
+        imputer = SimpleImputer(strategy="median")
 
-    housing_num = housing.drop("ocean_proximity", axis=1)
+        housing_num = housing.drop("ocean_proximity", axis=1)
 
-    imputer.fit(housing_num)
-    X = imputer.transform(housing_num)
-    return housing_num, X
+        imputer.fit(housing_num)
+        X = imputer.transform(housing_num)
+
+        logger.info("Nmerical data separated and  Imputing is done")
+        return housing_num, X
+
+    except Exception as e:
+        logger.error("Unable to do Imputation!")
 
 
 class Score:
@@ -100,15 +112,39 @@ if __name__ == "__main__":
     parser.add_argument(
         "--test_data_path",
         type=str,
-        required=True, help="Path to test CSV file"
+        default = "datasets/housing/test.csv",
+        help="Path to test CSV file"
     )
     parser.add_argument(
         "--model_path",
         type=str,
-        required=True, help="Path to pickled model file"
+        default = "artifacts/final_model.pkl",
+        help="Path to pickled model file"
     )
 
+    parser.add_argument(
+        "--log_to_file",
+        type = bool,
+        default = False,
+    )
+
+    parser.add_argument(
+        "--log_to_console",
+        type = bool,
+        default = True,
+    )
+
+    parser.add_argument(
+        "--log_level",
+        type = str,
+        default = 'DEBUG',
+    )
     args = parser.parse_args()
+
+    #logging
+    logger = setup_logger(log_to_file=args.log_to_file,
+                          log_to_console=args.log_to_console,
+                          log_level=args.log_level)
 
     obj = Score(args.test_data_path, args.model_path)
     data, labels = obj.get_data()

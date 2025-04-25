@@ -15,6 +15,7 @@ from sklearn.model_selection import (
 )
 from sklearn.tree import DecisionTreeRegressor
 
+from Script.logger import setup_logger
 
 def get_features(housing):
     """
@@ -32,16 +33,21 @@ def get_features(housing):
     housing : pandas dataframe
               dataframe with 3 new features
     """
-    housing["rooms_per_household"] = (
-        housing["total_rooms"] / housing["households"]
-    )
-    housing["bedrooms_per_room"] = (
-        housing["total_bedrooms"] / housing["total_rooms"]
-    )
-    housing["population_per_household"] = (
-        housing["population"] / housing["households"]
-    )
-    return housing
+    try:
+        housing["rooms_per_household"] = (
+            housing["total_rooms"] / housing["households"]
+        )
+        housing["bedrooms_per_room"] = (
+            housing["total_bedrooms"] / housing["total_rooms"]
+        )
+        housing["population_per_household"] = (
+            housing["population"] / housing["households"]
+        )
+        logger.info("New features: rooms_per_household, bedrooms_per_room and population_per_household added")
+        return housing
+
+    except Exception as e:
+        logger.error("Unable to create new features!")
 
 
 def SimpleImputing(housing):
@@ -59,13 +65,20 @@ def SimpleImputing(housing):
     X : pandas dataframe
        dataframe with imputed values
     """
-    imputer = SimpleImputer(strategy="median")
 
-    housing_num = housing.drop("ocean_proximity", axis=1)
+    try:
+        imputer = SimpleImputer(strategy="median")
 
-    imputer.fit(housing_num)
-    X = imputer.transform(housing_num)
-    return housing_num, X
+        housing_num = housing.drop("ocean_proximity", axis=1)
+
+        imputer.fit(housing_num)
+        X = imputer.transform(housing_num)
+
+        logger.info("Nmerical data separated and  Imputing is done")
+        return housing_num, X
+
+    except Exception as e:
+        logger.error("Unable to do Imputation!")
 
 
 def Linear_Regression(housing_prepared, housing_labels):
@@ -82,16 +95,21 @@ def Linear_Regression(housing_prepared, housing_labels):
     -------
     None
     """
-    lin_reg = LinearRegression()
-    lin_reg.fit(housing_prepared, housing_labels)
+    try:
+        lin_reg = LinearRegression()
+        lin_reg.fit(housing_prepared, housing_labels)
 
-    housing_predictions = lin_reg.predict(housing_prepared)
-    lin_mse = mean_squared_error(housing_labels, housing_predictions)
-    lin_rmse = np.sqrt(lin_mse)
+        housing_predictions = lin_reg.predict(housing_prepared)
+        lin_mse = mean_squared_error(housing_labels, housing_predictions)
+        lin_rmse = np.sqrt(lin_mse)
 
-    lin_mae = mean_absolute_error(housing_labels, housing_predictions)
+        lin_mae = mean_absolute_error(housing_labels, housing_predictions)
 
-    print(f"Model: Lin_Reg with RMSE: {lin_rmse:.2f} and MAE: {lin_mae:.2f}")
+        print(f"Model: Lin_Reg with RMSE: {lin_rmse:.2f} and MAE: {lin_mae:.2f}")
+
+        logger.info("Linear regression model is successfully implemented")
+    except Exception as e:
+        logger.error("Linear regression failed!")
 
 
 def Tree_Regression(housing_prepared, housing_labels):
@@ -108,13 +126,19 @@ def Tree_Regression(housing_prepared, housing_labels):
     -------
     None
     """
-    tree_reg = DecisionTreeRegressor(random_state=42)
-    tree_reg.fit(housing_prepared, housing_labels)
+    try:
+        tree_reg = DecisionTreeRegressor(random_state=42)
+        tree_reg.fit(housing_prepared, housing_labels)
 
-    housing_predictions = tree_reg.predict(housing_prepared)
-    tree_mse = mean_squared_error(housing_labels, housing_predictions)
-    tree_rmse = np.sqrt(tree_mse)
-    print(f"Model: Tree_Regression with RMSE: {tree_rmse:.2f}")
+        housing_predictions = tree_reg.predict(housing_prepared)
+        tree_mse = mean_squared_error(housing_labels, housing_predictions)
+        tree_rmse = np.sqrt(tree_mse)
+        print(f"Model: Tree_Regression with RMSE: {tree_rmse:.2f}")
+
+        logger.info("Decision Tree model is successfully implemented")
+
+    except Exception as e:
+        logger.error("Decision Tree is failed!")
 
 
 def Random_Forest(housing_prepared, housing_labels):
@@ -131,25 +155,32 @@ def Random_Forest(housing_prepared, housing_labels):
     -------
     None
     """
-    param_distribs = {
-        "n_estimators": randint(low=1, high=200),
-        "max_features": randint(low=1, high=8),
-    }
 
-    forest_reg = RandomForestRegressor(random_state=42)
-    rnd_search = RandomizedSearchCV(
-        forest_reg,
-        param_distributions=param_distribs,
-        n_iter=10,
-        cv=5,
-        scoring="neg_mean_squared_error",
-        random_state=42,
-    )
-    rnd_search.fit(housing_prepared, housing_labels)
-    cvres = rnd_search.cv_results_
-    print("Model: Random_Forest")
-    for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
-        print(np.sqrt(-mean_score), params)
+    try:
+        param_distribs = {
+            "n_estimators": randint(low=1, high=200),
+            "max_features": randint(low=1, high=8),
+        }
+
+        forest_reg = RandomForestRegressor(random_state=42)
+        rnd_search = RandomizedSearchCV(
+            forest_reg,
+            param_distributions=param_distribs,
+            n_iter=10,
+            cv=5,
+            scoring="neg_mean_squared_error",
+            random_state=42,
+        )
+        rnd_search.fit(housing_prepared, housing_labels)
+        cvres = rnd_search.cv_results_
+        print("Model: Random_Forest")
+        for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
+            print(np.sqrt(-mean_score), params)
+
+        logger.info("Random Forest model is successfully implemented")
+
+    except Exception as e:
+        logger.error("Random Forest is failed!")
 
 
 def Best_Model(housing_prepared, housing_labels):
@@ -167,39 +198,46 @@ def Best_Model(housing_prepared, housing_labels):
     -------
     final_model: best model parameters
     """
-    param_grid = [
-        # try 12 (3×4) combinations of hyperparameters
-        {"n_estimators": [3, 10, 30], "max_features": [2, 4, 6, 8]},
-        # then try 6 (2×3) combinations with bootstrap set as False
-        {"bootstrap": [False],
-         "n_estimators": [3, 10],
-         "max_features": [2, 3, 4]},
-    ]
 
-    forest_reg = RandomForestRegressor(random_state=42)
-    # train across 5 folds, that's a total of (12+6)*5=90 rounds of training
-    grid_search = GridSearchCV(
-        forest_reg,
-        param_grid,
-        cv=5,
-        scoring="neg_mean_squared_error",
-        return_train_score=True,
-    )
-    grid_search.fit(housing_prepared, housing_labels)
+    try:
+        param_grid = [
+            # try 12 (3×4) combinations of hyperparameters
+            {"n_estimators": [3, 10, 30], "max_features": [2, 4, 6, 8]},
+            # then try 6 (2×3) combinations with bootstrap set as False
+            {"bootstrap": [False],
+            "n_estimators": [3, 10],
+            "max_features": [2, 3, 4]},
+        ]
 
-    grid_search.best_params_
-    cvres = grid_search.cv_results_
+        forest_reg = RandomForestRegressor(random_state=42)
+        # train across 5 folds, that's a total of (12+6)*5=90 rounds of training
+        grid_search = GridSearchCV(
+            forest_reg,
+            param_grid,
+            cv=5,
+            scoring="neg_mean_squared_error",
+            return_train_score=True,
+        )
+        grid_search.fit(housing_prepared, housing_labels)
 
-    print("Model: Grid_Search with Random_Forest")
-    for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
-        print(np.sqrt(-mean_score), params)
+        grid_search.best_params_
+        cvres = grid_search.cv_results_
 
-    feature_importances = grid_search.best_estimator_.feature_importances_
-    sorted(zip(feature_importances, housing_prepared.columns), reverse=True)
+        print("Model: Grid_Search with Random_Forest")
+        for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
+            print(np.sqrt(-mean_score), params)
 
-    final_model = grid_search.best_estimator_
+        feature_importances = grid_search.best_estimator_.feature_importances_
+        sorted(zip(feature_importances, housing_prepared.columns), reverse=True)
 
-    return final_model
+        final_model = grid_search.best_estimator_
+
+        return final_model
+
+        logger.info("Best model is successfully implemented")
+
+    except Exception as e:
+        logger.error("Best model is failed!")
 
 
 def saving(final_model, model_path):
@@ -214,15 +252,21 @@ def saving(final_model, model_path):
     -------
     None
     """
-    # Ensure 'artifacts' folder exists
-    os.makedirs("artifacts", exist_ok=True)
 
-    # Save the model
-    with open(model_path, "wb") as f:
-        pickle.dump(final_model, f)
+    try:
+        # Ensure 'artifacts' folder exists
+        os.makedirs("artifacts", exist_ok=True)
 
-    print(f"Model saved to: {model_path}")
+        # Save the model
+        with open(model_path, "wb") as f:
+            pickle.dump(final_model, f)
 
+        print(f"Model saved to: {model_path}")
+
+        logger.info("Model saved as Pickel successfully")
+
+    except Exception as e:
+        logger.error("Failed to save best model!")
 
 class Data_Train:
     def __init__(self, train_path, model_path):
@@ -267,17 +311,39 @@ if __name__ == "__main__":
     parser.add_argument(
         "--train_data_path",
         type=str,
-        required=True,
+        default = "datasets/housing/train.csv",
         help="Path to test CSV file"
     )
     parser.add_argument(
         "--model_path",
         type=str,
-        required=True,
+        default = "artifacts/final_model.pkl",
         help="Path to pickled model file"
     )
 
+    parser.add_argument(
+        "--log_to_file",
+        type = bool,
+        default = False,
+    )
+
+    parser.add_argument(
+        "--log_to_console",
+        type = bool,
+        default = True,
+    )
+
+    parser.add_argument(
+        "--log_level",
+        type = str,
+        default = 'DEBUG',
+    )
     args = parser.parse_args()
+
+    #logging
+    logger = setup_logger(log_to_file=args.log_to_file,
+                          log_to_console=args.log_to_console,
+                          log_level=args.log_level)
 
     obj = Data_Train(args.train_data_path, args.model_path)
     obj.get_data_train()
