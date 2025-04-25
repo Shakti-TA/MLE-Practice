@@ -57,3 +57,6 @@ To execute the script, follow the steps below:
    installation
    usage
    api
+   ingest_data_script
+   train_script
+   score_script

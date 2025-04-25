@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../Script'))  # Adjust path if needed
+
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
@@ -14,7 +18,9 @@ release = 'release: 1.0.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
+extensions = [    'sphinx.ext.autodoc',  # for autodoc functionality
+    'sphinx.ext.napoleon', # for Google-style or NumPy-style docstrings
+    ]
 
 templates_path = ['_templates']
 exclude_patterns = []
