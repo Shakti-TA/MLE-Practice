@@ -4,51 +4,45 @@ on:
   push:
     branches:
       - testing
-#   pull_request:
-#     branches:
-#       - main
+  # Uncomment the lines below to enable pull request trigger
+  # pull_request:
+  #   branches:
+  #     - main
 
 jobs:
   build_docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-    # Step 1: Checkout code
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Set up Conda (for running)
     - name: ⚙️ Set up Conda Environment
       uses: conda-incubator/setup-miniconda@v2
       with:
-          auto-update-conda: true
-          activate-environment: mle-dev
-          environment-file: env.yml
-          use-mamba: true
+        auto-update-conda: true
+        activate-environment: mle-dev
+        environment-file: env.yml
+        use-mamba: true
 
-    # Step 3: Clean old HTML files in docs/html (if they exist)
     - name: Clean old HTML files
       run: |
         rm -rf docs/build/html/*
 
-    # Step 4: Show directory tree (before building html)
     - name: 📂 Tree Before Building html
       run: |
         tree -L 3
 
-    # Step 5: Build documentation with Sphinx
     - name: Build docs using Sphinx
       run: |
         sphinx-build -b html docs/source docs/build/html
 
-    # Step 6: Display directory tree after building docs
-    - name: Display directory tree after building docs\html
+    - name: Display directory tree after building docs
       run: |
         tree -L 3
 
-    # Step 7: Upload the built documentation as artifacts
     - name: Upload built documentation
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3.1.3
       with:
         name: docs-html
         path: docs/build/html/
