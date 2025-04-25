@@ -8,17 +8,17 @@ on:
   #   branches:
   #     - main
 
-  
+
 jobs:
   build_docs:
     runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.0.0
 
       - name: ⚙️ Set up Conda Environment
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v2.4.0
         with:
           auto-update-conda: true
           activate-environment: mle-dev
