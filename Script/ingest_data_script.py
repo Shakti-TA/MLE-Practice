@@ -9,11 +9,6 @@ from sklearn.model_selection import StratifiedShuffleSplit
 
 from Script.logger import setup_logger
 
-# If want to log in log_file uncomment down
-# logger = setup_logger(log_to_file=True, log_to_console=False, log_level='INFO')
-
-# If want to log in the console uncomment down
-logger = setup_logger(log_to_file=False, log_to_console=True, log_level='INFO')
 
 def fetch_housing_data(housing_url, housing_path):
     """
@@ -131,7 +126,7 @@ class DataIngestion:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Download and split housing data."
+        description="Download and split housing data with logging."
         )
     parser.add_argument(
         "--path",
@@ -140,6 +135,29 @@ if __name__ == "__main__":
         help="Directory to store the housing data",
     )
 
+    parser.add_argument(
+        "--log_to_file",
+        type = bool,
+        default = False,
+    )
+
+    parser.add_argument(
+        "--log_to_console",
+        type = bool,
+        default = True,
+    )
+
+    parser.add_argument(
+        "--log_level",
+        type = str,
+        default = 'DEBUG',
+    )
     args = parser.parse_args()
+
+    #logging
+    logger = setup_logger(log_to_file=args.log_to_file,
+                          log_to_console=args.log_to_console,
+                          log_level=args.log_level)
+
     obj = DataIngestion(args.path)
     obj.initiate_data_ingestion()

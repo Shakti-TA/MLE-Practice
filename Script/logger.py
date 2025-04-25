@@ -2,7 +2,7 @@ import logging
 import os
 from datetime import datetime
 
-def setup_logger(log_to_file=True, log_to_console=True, log_level='DEBUG', log_dir='Script/logs'):
+def setup_logger(log_to_file=False, log_to_console=True, log_level='DEBUG', log_dir='Script/logs'):
     # Create a logger
     logger = logging.getLogger(__name__)
     logger.setLevel(getattr(logging, log_level.upper(), logging.INFO))

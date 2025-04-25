@@ -151,9 +151,9 @@ jobs:
       # Step 4: Run logger script ot console
       - name: Run logger script to console
         run: |
-          python -m Script.ingest_data_script
-          python -m Script.train_script --train_data_path datasets/housing/train.csv --model_path artifacts/final_model.pkl
-          python -m Script.score_script --test_data_path datasets/housing/test.csv --model_path artifacts/final_model.pkl
+          python -m Script.ingest_data_script --log_to_file False --log_to_console True --log_level DEBUG
+          python -m Script.train_script --log_to_file False --log_to_console True --log_level DEBUG
+          python -m Script.score_script --log_to_file False --log_to_console True --log_level DEBUG
 
 
 

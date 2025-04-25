@@ -8,12 +8,6 @@ from sklearn.metrics import mean_squared_error
 
 from Script.logger import setup_logger
 
-# If want to log in log_file uncomment down
-# logger = setup_logger(log_to_file=True, log_to_console=False, log_level='INFO')
-
-# If want to log in the console uncomment down
-logger = setup_logger(log_to_file=False, log_to_console=True, log_level='INFO')
-
 def get_features(housing):
     """
     This function add new features: rooms_per_household,
@@ -118,15 +112,39 @@ if __name__ == "__main__":
     parser.add_argument(
         "--test_data_path",
         type=str,
-        required=True, help="Path to test CSV file"
+        default = "datasets/housing/test.csv",
+        help="Path to test CSV file"
     )
     parser.add_argument(
         "--model_path",
         type=str,
-        required=True, help="Path to pickled model file"
+        default = "artifacts/final_model.pkl",
+        help="Path to pickled model file"
     )
 
+    parser.add_argument(
+        "--log_to_file",
+        type = bool,
+        default = False,
+    )
+
+    parser.add_argument(
+        "--log_to_console",
+        type = bool,
+        default = True,
+    )
+
+    parser.add_argument(
+        "--log_level",
+        type = str,
+        default = 'DEBUG',
+    )
     args = parser.parse_args()
+
+    #logging
+    logger = setup_logger(log_to_file=args.log_to_file,
+                          log_to_console=args.log_to_console,
+                          log_level=args.log_level)
 
     obj = Score(args.test_data_path, args.model_path)
     data, labels = obj.get_data()
