@@ -41,14 +41,14 @@ jobs:
     - name: 📂 Tree Before Build
       run: tree -L 3
 
-    # Step 5: Build the package (uncomment and complete this section if needed)
-    # - name: 🏗️ Build the Package
-    #   run: |
-    #     python setup.py sdist bdist_wheel
+    # Step 6: Build docs using sphinx
+    - name: Build docs using Sphinx
+      run: |
+        sphinx-build -b html docs/source docs/build/html
 
     # Step 6: Show directory tree (after build)
-    # - name: 📂 Tree After Build
-    #   run: tree -L 3
+    - name: 📂 Tree After Build
+      run: tree -L 3
 
     # Step 7: Install the package in dev mode
     # - name: 📦 Install Package in Dev mode
