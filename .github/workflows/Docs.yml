@@ -1,9 +1,9 @@
 name: Build Documentation
 
 on:
-  push:
-    branches:
-      - testing
+  # push:
+  #   branches:
+  #     - testing
 
 jobs:
   build_docs:
@@ -21,7 +21,7 @@ jobs:
           environment-file: env.yml
           use-mamba: true
           miniconda-version: "latest"
-          minconda-download-url: "https://your-custom-mirror.com/miniconda"  
+          minconda-download-url: "https://your-custom-mirror.com/miniconda"
 
       - name: Install tree command
         run: sudo apt-get install tree

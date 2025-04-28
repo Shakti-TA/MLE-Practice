@@ -1,9 +1,9 @@
 name: UnitTest
 
 on:
-  # push:
-  #   branches:
-  #     - testing
+  push:
+    branches:
+      - testing
   # pull_request:
   #   branches:
   #     - testing
