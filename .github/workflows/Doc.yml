@@ -32,11 +32,14 @@ jobs:
     - name: 🌳 Install `tree`
       run: sudo apt-get install -y tree
 
-    # Uncomment and complete the following steps as needed
+    # Step 4: Clean old html files exist already
+    - name: Clean old HTML files
+      run: |
+        rm -rf docs/build/html/*
 
-    # Step 4: Show directory tree (before build)
-    # - name: 📂 Tree Before Build
-    #   run: tree -L 3
+    # Step 5: Show directory tree (before build)
+    - name: 📂 Tree Before Build
+      run: tree -L 3
 
     # Step 5: Build the package (uncomment and complete this section if needed)
     # - name: 🏗️ Build the Package
