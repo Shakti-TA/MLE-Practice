@@ -44,6 +44,7 @@ jobs:
     # Step 6: Build docs using sphinx
     - name: Build docs using Sphinx
       run: |
+        pip install sphinx
         sphinx-build -b html docs/source docs/build/html
 
     # Step 6: Show directory tree (after build)
