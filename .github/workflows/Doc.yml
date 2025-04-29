@@ -1,0 +1,59 @@
+name: Documentation
+
+on:
+  push:
+    branches:
+      - testing
+  # Uncomment the following lines if you want to trigger the workflow on pull requests as well
+  # pull_request:
+  #   branches:
+  #     - testing
+
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the repository
+    - name: 🔄 Checkout Repository
+      uses: actions/checkout@v3
+
+    # Step 2: Set up Conda environment
+    - name: ⚙️ Set up Conda Environment
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+          auto-update-conda: true
+          activate-environment: mle-dev
+          environment-file: env.yml
+          use-mamba: true
+          auto-activate-base: false
+
+    # Step 3: Install tree CLI tool
+    - name: 🌳 Install `tree`
+      run: sudo apt-get install -y tree
+
+    # Step 4: Clean old html files exist already
+    - name: Clean old HTML files
+      run: |
+        rm -rf docs/build/html/*
+
+    # Step 5: Show directory tree (before build)
+    - name: 📂 Tree Before Build
+      run: tree -L 3
+
+    # Step 6: Build docs using sphinx
+    - name: Build docs using Sphinx
+      run: |
+        pip install sphinx
+        sphinx-build -b html docs/source docs/build/html
+
+    # Step 7: Show directory tree (after build)
+    - name: 📂 Tree After Build
+      run: tree -L 3
+
+    # Step 8: Upload built HTML files as an artifact
+    - name: 📦 Upload HTML Documentation as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: docs-html
+        path: docs/build/html/

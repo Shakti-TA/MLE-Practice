@@ -10,19 +10,24 @@ from Script.logger import setup_logger
 
 def get_features(housing):
     """
-    This function add new features: rooms_per_household,
-                                    bedrooms_per_room,
-                                    population_per_household,
-    in the housing dataset.
+    Add new ratio-based features to the housing dataset.
 
-    Parameters:
+    This function creates and appends three new features to the housing dataset:
+    - `rooms_per_household`
+    - `bedrooms_per_room`
+    - `population_per_household`
+
+    These features are derived from existing columns and may help improve model performance.
+
+    Parameters
     ----------
-    housing : pandas dataframe
-              Train data after stratified train_test split
-    Returns:
+    housing : pandas.DataFrame
+        Training dataset after stratified train-test split.
+
+    Returns
     -------
-    housing : pandas dataframe
-              dataframe with 3 new features
+    housing : pandas.DataFrame
+        DataFrame with three additional engineered features.
     """
     try:
         housing["rooms_per_household"] = (
@@ -43,18 +48,22 @@ def get_features(housing):
 
 def SimpleImputing(housing):
     """
-    This function imputes the numerical feature columns with the median.
+    Impute missing values in numerical features using the median.
 
-    Parameters:
+    This function selects numerical columns from the housing dataset and imputes
+    missing values in those columns using the median strategy.
+
+    Parameters
     ----------
-    housing : pandas dataframe
-              Train data after feature engineering.
-    Returns:
+    housing : pandas.DataFrame
+        Training dataset after feature engineering.
+
+    Returns
     -------
-    housing_num : pandas dataframe
-                dataframe with numerical features only
-    X : pandas dataframe
-       dataframe with imputed values
+    housing_num : pandas.DataFrame
+        DataFrame containing only the numerical features.
+    X : pandas.DataFrame
+        DataFrame with missing values imputed using the median.
     """
     try:
         imputer = SimpleImputer(strategy="median")

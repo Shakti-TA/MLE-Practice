@@ -1,9 +1,9 @@
 name: UnitTest, Build and Deploy
 
 on:
-  push:
-    branches:
-      - testing
+  # push:
+  #   branches:
+  #     - testing
 #   pull_request:
 #     branches:
 #       - testing

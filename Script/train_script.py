@@ -19,19 +19,24 @@ from Script.logger import setup_logger
 
 def get_features(housing):
     """
-    This function add new features: rooms_per_household,
-                                    bedrooms_per_room,
-                                    population_per_household,
-    in the housing dataset.
+    Add new ratio-based features to the housing dataset.
 
-    Parameters:
+    This function creates and appends three new features to the housing dataset:
+    - `rooms_per_household`
+    - `bedrooms_per_room`
+    - `population_per_household`
+
+    These features are derived from existing columns and may help improve model performance.
+
+    Parameters
     ----------
-    housing : pandas dataframe
-              Train data after stratified train_test split
-    Returns:
+    housing : pandas.DataFrame
+        Training dataset after stratified train-test split.
+
+    Returns
     -------
-    housing : pandas dataframe
-              dataframe with 3 new features
+    housing : pandas.DataFrame
+        DataFrame with three additional engineered features.
     """
     try:
         housing["rooms_per_household"] = (
@@ -52,20 +57,23 @@ def get_features(housing):
 
 def SimpleImputing(housing):
     """
-    This function imputes the numerical feature columns with the median.
+    Impute missing values in numerical features using the median.
 
-    Parameters:
+    This function selects numerical columns from the housing dataset and imputes
+    missing values in those columns using the median strategy.
+
+    Parameters
     ----------
-    housing : pandas dataframe
-              Train data after feature engineering.
-    Returns:
-    -------
-    housing_num : pandas dataframe
-                dataframe with numerical features only
-    X : pandas dataframe
-       dataframe with imputed values
-    """
+    housing : pandas.DataFrame
+        Training dataset after feature engineering.
 
+    Returns
+    -------
+    housing_num : pandas.DataFrame
+        DataFrame containing only the numerical features.
+    X : pandas.DataFrame
+        DataFrame with missing values imputed using the median.
+    """
     try:
         imputer = SimpleImputer(strategy="median")
 
@@ -83,15 +91,19 @@ def SimpleImputing(housing):
 
 def Linear_Regression(housing_prepared, housing_labels):
     """
-    This function leverage Linear Regression on the Imputed train data.
+    Train a Linear Regression model on the imputed training data.
 
-    Parameters:
+    This function fits a Linear Regression model using the preprocessed training
+    data and corresponding target labels.
+
+    Parameters
     ----------
-    housing_prepared : pandas dataframe
-                       Imputed Train data.
-    housing_labels : pandas series
-                     target_labels
-    Returns:
+    housing_prepared : pandas.DataFrame
+        Imputed training data with engineered features.
+    housing_labels : pandas.Series
+        Target values corresponding to the training data.
+
+    Returns
     -------
     None
     """
@@ -114,15 +126,19 @@ def Linear_Regression(housing_prepared, housing_labels):
 
 def Tree_Regression(housing_prepared, housing_labels):
     """
-    This function leverage Tree Regression on the Imputed train data.
+    Train a Decision Tree Regressor on the imputed training data.
 
-    Parameters:
+    This function fits a Decision Tree Regression model using the preprocessed
+    training data and corresponding target labels.
+
+    Parameters
     ----------
-    housing_prepared : pandas dataframe
-                       Imputed Train data.
-    housing_labels : pandas series
-                     target_labels
-    Returns:
+    housing_prepared : pandas.DataFrame
+        Imputed training dataset with engineered features.
+    housing_labels : pandas.Series
+        Target values corresponding to the training data.
+
+    Returns
     -------
     None
     """
@@ -143,15 +159,19 @@ def Tree_Regression(housing_prepared, housing_labels):
 
 def Random_Forest(housing_prepared, housing_labels):
     """
-    This function leverage Random Forest on the Imputed train data.
+    Train a Random Forest Regressor on the imputed training data.
 
-    Parameters:
+    This function fits a Random Forest Regression model using the preprocessed
+    training data and corresponding target labels.
+
+    Parameters
     ----------
-    housing_prepared : pandas dataframe
-                       Imputed Train data.
-    housing_labels : pandas series
-                     target_labels
-    Returns:
+    housing_prepared : pandas.DataFrame
+        Imputed training dataset with engineered features.
+    housing_labels : pandas.Series
+        Target values corresponding to the training data.
+
+    Returns
     -------
     None
     """
@@ -185,18 +205,22 @@ def Random_Forest(housing_prepared, housing_labels):
 
 def Best_Model(housing_prepared, housing_labels):
     """
-    This function leverage Grid search with Random
-    Forest on the Imputed train data.
+    Perform Grid Search to tune hyperparameters for Random Forest on the imputed training data.
 
-    Parameters:
+    This function uses Grid Search to find the best hyperparameters for a Random Forest
+    Regressor, based on the preprocessed training data and corresponding target labels.
+
+    Parameters
     ----------
-    housing_prepared : pandas dataframe
-                       Imputed Train data.
-    housing_labels : pandas series
-                     target_labels
-    Returns:
+    housing_prepared : pandas.DataFrame
+        Imputed training dataset with engineered features.
+    housing_labels : pandas.Series
+        Target values corresponding to the training data.
+
+    Returns
     -------
-    final_model: best model parameters
+    final_model : sklearn.ensemble.RandomForestRegressor
+        The best Random Forest model found by Grid Search, with optimized hyperparameters.
     """
 
     try:
@@ -242,13 +266,17 @@ def Best_Model(housing_prepared, housing_labels):
 
 def saving(final_model, model_path):
     """
-    This function saves the best model parameters to the artifacts.
+    Save the best model parameters to the artifacts.
 
-    Parameters:
+    This function stores the best Random Forest model (with optimized hyperparameters)
+    to the artifacts directory for later use or deployment.
+
+    Parameters
     ----------
-    final_model: Best Random_forest model parameters
+    final_model : sklearn.ensemble.RandomForestRegressor
+        The best Random Forest model with optimized hyperparameters.
 
-    Returns:
+    Returns
     -------
     None
     """
